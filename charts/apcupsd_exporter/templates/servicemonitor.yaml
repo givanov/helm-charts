@@ -8,9 +8,9 @@ metadata:
   {{- end }}
   labels:
     {{- include "apcupsd-exporter.labels" . | nindent 4 }}
-      {{- if .Values.serviceMonitor.additionalLabels }}
-  {{ toYaml .Values.serviceMonitor.additionalLabels | indent 4 }}
-  {{- end }}
+{{- if .Values.serviceMonitor.additionalLabels }}
+{{ toYaml .Values.serviceMonitor.additionalLabels | indent 4 }}
+{{- end }}
 spec:
   endpoints:
     - port: metrics
