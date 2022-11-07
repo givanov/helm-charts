@@ -14,7 +14,7 @@ givanov` to see the charts.
 
 To install the apcupsd_exporter chart:
 
-    helm install my-apcupsd_exporter givanov/apcupsd-exporter
+    helm install my-apcupsd-exporter givanov/apcupsd-exporter
 
 To uninstall the chart:
 
