@@ -12,10 +12,10 @@ If you had already added this repo earlier, run `helm repo update` to retrieve
 the latest versions of the packages.  You can then run `helm search repo
 givanov` to see the charts.
 
-To install the apcupsd_exporter chart:
+To install the apcupsd-exporter chart:
 
-    helm install my-apcupsd_exporter givanov/apcupsd_exporter
+    helm install my-apcupsd-exporter givanov/apcupsd-exporter
 
 To uninstall the chart:
 
-    helm delete my-apcupsd_exporter
+    helm delete my-apcupsd-exporter
