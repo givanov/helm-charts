@@ -3,6 +3,16 @@ entries:
   apcupsd-exporter:
   - apiVersion: v2
     appVersion: v1.1.6
+    created: "2022-11-07T21:27:26.442048508Z"
+    description: A Helm chart for Kubernetes
+    digest: 34b2376e479f70bc96e3caff8a7bc455607a9f9facf54f88539690df9edd1eca
+    name: apcupsd-exporter
+    type: application
+    urls:
+    - https://github.com/givanov/helm-charts/releases/download/apcupsd-exporter-0.3.1/apcupsd-exporter-0.3.1.tgz
+    version: 0.3.1
+  - apiVersion: v2
+    appVersion: v1.1.6
     created: "2022-11-07T21:22:03.884917014Z"
     description: A Helm chart for Kubernetes
     digest: 31345700ef26d0f8381e81f1dc885abf90dd4e52ecb376f2fe0ffae054a0110f
@@ -71,4 +81,4 @@ entries:
     urls:
     - https://github.com/givanov/helm-charts/releases/download/apcupsd-exporter-0.1.0/apcupsd-exporter-0.1.0.tgz
     version: 0.1.0
-generated: "2022-11-07T21:22:03.884956914Z"
+generated: "2022-11-07T21:27:26.442087909Z"
