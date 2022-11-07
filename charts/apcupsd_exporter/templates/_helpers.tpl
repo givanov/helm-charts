@@ -65,5 +65,5 @@ Create the name of the service account to use
 Create telemetry addr string
 */}}
 {{- define "apcupsd-exporter.telemetry.addr" -}}
-{{- printf ":%s" .Values.service.port }}
+{{- printf ":%s" (.Values.service.port | toString ) }}
 {{- end }}
