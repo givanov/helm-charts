@@ -107,3 +107,8 @@ serviceMonitor:
   additionalLabels: {}
 
   honorLabels: false
+
+dashboards:
+  enabled: false
+  labels:
+    grafana_dashboard: "1"
