@@ -2,6 +2,16 @@ apiVersion: v1
 entries:
   apcupsd-exporter:
   - apiVersion: v2
+    appVersion: 1.2.3
+    created: "2024-07-21T13:45:25.285302979Z"
+    description: A Helm chart for Kubernetes
+    digest: 065f0217a35c20b32c86e5137a6601cd5427f5d796bc4d1bb82d70d6c479c6aa
+    name: apcupsd-exporter
+    type: application
+    urls:
+    - https://github.com/givanov/helm-charts/releases/download/apcupsd-exporter-1.0.0/apcupsd-exporter-1.0.0.tgz
+    version: 1.0.0
+  - apiVersion: v2
     appVersion: v1.1.6
     created: "2022-11-07T23:19:23.106899059Z"
     description: A Helm chart for Kubernetes
@@ -91,4 +101,15 @@ entries:
     urls:
     - https://github.com/givanov/helm-charts/releases/download/apcupsd-exporter-0.1.0/apcupsd-exporter-0.1.0.tgz
     version: 0.1.0
-generated: "2022-11-07T23:19:23.106932056Z"
+  unraid-encrypted-disk-secret-api:
+  - apiVersion: v2
+    appVersion: 1.0.0
+    created: "2024-07-21T13:45:25.375226232Z"
+    description: A Helm chart for Kubernetes
+    digest: a1863d69cb9f194ede9417091e7018fcb9dd63f9a2b13d11b3f9a9da24a14b2a
+    name: unraid-encrypted-disk-secret-api
+    type: application
+    urls:
+    - https://github.com/givanov/helm-charts/releases/download/unraid-encrypted-disk-secret-api-1.0.0/unraid-encrypted-disk-secret-api-1.0.0.tgz
+    version: 1.0.0
+generated: "2024-07-21T13:45:25.375306702Z"
