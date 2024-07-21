@@ -105,3 +105,11 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+# define extra environment variables
+env: []
+# - name: MY_ENV_VAR
+#   valueFrom:
+#     secretKeyRef:
+#       name: my-secret
+#       key: value
