@@ -103,6 +103,16 @@ entries:
     version: 0.1.0
   unraid-encrypted-disk-secret-api:
   - apiVersion: v2
+    appVersion: 1.1.2
+    created: "2024-07-21T15:38:37.97142212Z"
+    description: A Helm chart for Kubernetes
+    digest: 65bda1339e8dc6cc83175272c123052ef65ced9149c2242f8b67262f132eb514
+    name: unraid-encrypted-disk-secret-api
+    type: application
+    urls:
+    - https://github.com/givanov/helm-charts/releases/download/unraid-encrypted-disk-secret-api-1.0.1/unraid-encrypted-disk-secret-api-1.0.1.tgz
+    version: 1.0.1
+  - apiVersion: v2
     appVersion: 1.0.0
     created: "2024-07-21T13:45:25.375226232Z"
     description: A Helm chart for Kubernetes
@@ -112,4 +122,4 @@ entries:
     urls:
     - https://github.com/givanov/helm-charts/releases/download/unraid-encrypted-disk-secret-api-1.0.0/unraid-encrypted-disk-secret-api-1.0.0.tgz
     version: 1.0.0
-generated: "2024-07-21T13:45:25.375306702Z"
+generated: "2024-07-21T15:38:37.971452627Z"
