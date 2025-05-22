@@ -39,11 +39,6 @@ spec:
           {{- if .Values.args.listenAddr }}
           - -addr={{ .Values.args.listenAddr }}
           {{- end }}
-          {{- if .Values.args.network }}
-          - -apcupsd.network={{ .Values.args.network }}
-          {{- end }}
-          - -telemetry.addr={{ include "rpi-export.telemetry.addr" . }}
-          - -telemetry.path=/metrics
           ports:
             - name: metrics
               containerPort: {{ .Values.service.port }}
