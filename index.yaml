@@ -104,6 +104,16 @@ entries:
   rpi-export:
   - apiVersion: v2
     appVersion: 1.0.1
+    created: "2025-05-22T23:42:07.409112092Z"
+    description: A Helm chart for the rpi_exporter
+    digest: 340576c428993774447cb5738f189188a16c7dde4ce6d7d5d578f2294f1ed185
+    name: rpi-export
+    type: application
+    urls:
+    - https://github.com/givanov/helm-charts/releases/download/rpi-export-1.0.2/rpi-export-1.0.2.tgz
+    version: 1.0.2
+  - apiVersion: v2
+    appVersion: 1.0.1
     created: "2025-05-22T23:39:43.217493395Z"
     description: A Helm chart for the rpi_exporter
     digest: dc863c6bdd58c6890d983eae84521f5ad32d2526d75c6a1882472fa67bd26748
@@ -163,4 +173,4 @@ entries:
     urls:
     - https://github.com/givanov/helm-charts/releases/download/unraid-encrypted-disk-secret-api-1.0.0/unraid-encrypted-disk-secret-api-1.0.0.tgz
     version: 1.0.0
-generated: "2025-05-22T23:39:43.217528821Z"
+generated: "2025-05-22T23:42:07.409151907Z"
