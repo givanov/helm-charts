@@ -33,9 +33,11 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - /rpi_exporter
           args:
-          {{- if .Values.args.address }}
-          - -apcupsd.addr={{ .Values.args.address }}
+          {{- if .Values.args.listenAddr }}
+          - -addr={{ .Values.args.listenAddr }}
           {{- end }}
           {{- if .Values.args.network }}
           - -apcupsd.network={{ .Values.args.network }}

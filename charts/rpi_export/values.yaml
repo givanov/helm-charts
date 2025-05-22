@@ -15,10 +15,8 @@ nameOverride: ""
 fullnameOverride: ""
 
 args:
-  # Address of apcupsd Network Information Server (NIS) (default ":3551")
-  address:
-  # network of apcupsd Network Information Server (NIS): typically "tcp", "tcp4", or "tcp6" (default "tcp")
-  network:
+  # Address of to listen on
+  listenAddr: ":9090"
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -83,16 +81,16 @@ autoscaling:
 
 # Additional volumes on the output Deployment definition.
 volumes:
- - name: vcio
-   hostPath:
-     path: /dev/vcio
-     type: File
+  - name: vcio
+    hostPath:
+      path: /dev/vcio
+      type: CharDevice
 
 # Additional volumeMounts on the output Deployment definition.
 volumeMounts:
- - name: vcio
-   mountPath: /dev/vcio
-   readOnly: true
+  - name: vcio
+    mountPath: /dev/vcio
+    readOnly: true
 
 nodeSelector: {}
 
