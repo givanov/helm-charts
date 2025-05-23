@@ -33,12 +33,28 @@ spec:
           command:
             - /rpi_exporter
           args:
-          {{- if .Values.args.listenAddr }}
-          - -addr={{ .Values.args.listenAddr }}
+          {{- if .Values.args.bindInterface }}
+          - --bind-interface={{ .Values.args.bindInterface }}
+          {{- end }}
+          {{- if .Values.args.port }}
+          - --port={{ .Values.args.port }}
+          {{- end }}
+          {{- if .Values.args.debugMbox }}
+          - --mailbox-debug
+          {{- end }}
+          {{- if .Values.args.logLevel }}
+          - -v={{ .Values.args.logLevel }}
+          {{- end }}
+          {{- if .Values.useNodeNameAsHostname }}
+          env:
+            - name: HOSTNAME_OVERRIDE
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
           {{- end }}
           ports:
             - name: metrics
-              containerPort: {{ .Values.service.port }}
+              containerPort: {{ .Values.args.port }}
               protocol: TCP
           livenessProbe:
             httpGet:

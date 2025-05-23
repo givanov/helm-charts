@@ -14,7 +14,13 @@ fullnameOverride: ""
 
 args:
   # Address of to listen on
-  listenAddr: ":9090"
+  bindInterface: 0.0.0.0
+  port: 9090
+  debugMbox: false
+  logLevel: info
+
+# Controls whether to use the node name as the hostname label of all metrics
+useNodeNameAsHostname: true
 
 serviceAccount:
   # Specifies whether a service account should be created
