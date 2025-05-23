@@ -43,7 +43,7 @@ spec:
           - --mailbox-debug
           {{- end }}
           {{- if .Values.args.logLevel }}
-          - -v={{ .Values.args.logLevel }}
+          - --v={{ .Values.args.logLevel }}
           {{- end }}
           {{- if .Values.useNodeNameAsHostname }}
           env:
