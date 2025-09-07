@@ -101,6 +101,17 @@ entries:
     urls:
     - https://github.com/givanov/helm-charts/releases/download/apcupsd-exporter-0.1.0/apcupsd-exporter-0.1.0.tgz
     version: 0.1.0
+  dnsfilter-relay:
+  - apiVersion: v2
+    appVersion: rc-384_v1.4.0_71e8e92da8fec5764a274709954fd5b5369405a6
+    created: "2025-09-07T17:50:39.860669062Z"
+    description: A Helm chart for Kubernetes
+    digest: af488f81fc6c4c0d6a1dabf62c1667bd32cdab6bb1dd6745b1626a0450ff97fa
+    name: dnsfilter-relay
+    type: application
+    urls:
+    - https://github.com/givanov/helm-charts/releases/download/dnsfilter-relay-0.1.0/dnsfilter-relay-0.1.0.tgz
+    version: 0.1.0
   rpi-export:
   - apiVersion: v2
     appVersion: 2.0.1
@@ -243,4 +254,4 @@ entries:
     urls:
     - https://github.com/givanov/helm-charts/releases/download/unraid-encrypted-disk-secret-api-1.0.0/unraid-encrypted-disk-secret-api-1.0.0.tgz
     version: 1.0.0
-generated: "2025-05-23T13:21:08.623211171Z"
+generated: "2025-09-07T17:50:39.860721903Z"
