@@ -103,6 +103,16 @@ entries:
     version: 0.1.0
   dnsfilter-relay:
   - apiVersion: v2
+    appVersion: v1.4.0
+    created: "2026-04-27T14:25:04.011268297Z"
+    description: A Helm chart for Kubernetes
+    digest: bb032e748e083e1b31134c1ba0f59be92acbdd132820f7388c227309d1460f1d
+    name: dnsfilter-relay
+    type: application
+    urls:
+    - https://github.com/givanov/helm-charts/releases/download/dnsfilter-relay-0.2.0/dnsfilter-relay-0.2.0.tgz
+    version: 0.2.0
+  - apiVersion: v2
     appVersion: rc-384_v1.4.0_71e8e92da8fec5764a274709954fd5b5369405a6
     created: "2025-09-07T17:50:39.860669062Z"
     description: A Helm chart for Kubernetes
@@ -254,4 +264,4 @@ entries:
     urls:
     - https://github.com/givanov/helm-charts/releases/download/unraid-encrypted-disk-secret-api-1.0.0/unraid-encrypted-disk-secret-api-1.0.0.tgz
     version: 1.0.0
-generated: "2025-09-07T17:50:39.860721903Z"
+generated: "2026-04-27T14:25:04.011319523Z"
