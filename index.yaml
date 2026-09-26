@@ -132,6 +132,18 @@ entries:
     urls:
     - https://github.com/givanov/helm-charts/releases/download/dnsfilter-relay-0.1.0/dnsfilter-relay-0.1.0.tgz
     version: 0.1.0
+  nebula-sync:
+  - apiVersion: v2
+    appVersion: v0.11.2
+    created: "2026-09-26T20:55:14.577179004Z"
+    description: Synchronize the configuration of a primary Pi-hole v6.x instance
+      to one or more replica instances
+    digest: 27d2efecb26b055731be2e96637ba317c145d698d37df5c3751d214dc088812f
+    name: nebula-sync
+    type: application
+    urls:
+    - https://github.com/givanov/helm-charts/releases/download/nebula-sync-0.1.0/nebula-sync-0.1.0.tgz
+    version: 0.1.0
   rpi-export:
   - apiVersion: v2
     appVersion: 2.0.1
@@ -274,4 +286,4 @@ entries:
     urls:
     - https://github.com/givanov/helm-charts/releases/download/unraid-encrypted-disk-secret-api-1.0.0/unraid-encrypted-disk-secret-api-1.0.0.tgz
     version: 1.0.0
-generated: "2026-09-26T20:25:35.789408266Z"
+generated: "2026-09-26T20:55:14.577257932Z"
