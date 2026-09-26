@@ -1,0 +1,30 @@
+nebula-sync {{ .Chart.AppVersion }} was installed as release "{{ .Release.Name }}".
+
+{{- if not .Values.sync.cron }}
+
+WARNING: sync.cron is not set. nebula-sync performs a single synchronization
+and then exits; the Deployment will keep restarting the pod. For continuous
+operation set sync.cron (e.g. "0 * * * *"). For a one-shot sync a CronJob is
+a better fit than this chart's Deployment.
+
+{{- end }}
+{{- if not .Values.sync.runGravity }}
+
+NOTE: sync.runGravity is false - blocklists on the replicas are only updated
+when they next run gravity themselves. Set it to true to re-run gravity on
+the replicas after each sync.
+
+{{- end }}
+
+Verify the pod is running:
+
+    kubectl rollout status deployment {{ include "nebula-sync.fullname" . }}
+    kubectl logs deployment/{{ include "nebula-sync.fullname" . }}
+
+{{- if and .Values.sync.cron .Values.probes.readiness.enabled }}
+
+Check the health endpoint:
+
+    kubectl exec -it deploy/{{ include "nebula-sync.fullname" . }} -- \
+        wget -qO- http://localhost:8080/health
+{{- end }}

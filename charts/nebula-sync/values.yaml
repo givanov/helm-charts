@@ -1,0 +1,214 @@
+# Default values for nebula-sync.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+#
+# nebula-sync synchronizes the configuration of a primary Pi-hole v6.x
+# instance to one or more replica instances, using the Pi-hole REST API
+# (full Teleporter export/import, or selective synchronization).
+#
+# Targets are given as "scheme://host[:port]|password" strings. The password
+# is expected to come from a Secret (recommended) so it does not end up in
+# your values file:
+#
+#   kubectl create secret generic pihole-creds \
+#     --from-literal=primary='https://pihole.example.com|adminpass' \
+#     --from-literal=replicas='https://pihole2.example.com|adminpass'
+#
+# then point primary.secretKeyRef / replicas.secretKeyRef at it.
+
+# This will set the deployment replica count. Keep this at 1: you want exactly
+# one syncer, not one per pod.
+replicaCount: 1
+
+# This sets the container image more information can be found here: https://kubernetes.io/docs/concepts/containers/images/
+image:
+  repository: ghcr.io/lovelaze/nebula-sync
+  # This sets the pull policy for images.
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+# This is for the secrets for pulling an image from a private repository more information can be found here: https://kubernetes.io/docs/tasks/configure-container-images/configure-private-registry/
+imagePullSecrets: []
+# This is to override the chart name.
+nameOverride: ""
+fullnameOverride: ""
+
+# This section builds out the service account more information can be found here: https://kubernetes.io/docs/concepts/security/service-accounts/
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Automatically mount a ServiceAccount's API credentials? Not needed by
+  # nebula-sync, so off by default.
+  automount: false
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+# This is for setting Kubernetes Annotations to a Pod.
+# For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+podAnnotations: {}
+# This is for setting Kubernetes Labels to a Pod.
+# For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+podLabels: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+# The upstream image runs as user 1001 (non-root) and writes nothing to disk.
+securityContext: {}
+  # runAsNonRoot: true
+  # allowPrivilegeEscalation: false
+  # readOnlyRootFilesystem: true
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # seccompProfile:
+  #   type: RuntimeDefault
+
+# --- nebula-sync targets ---------------------------------------------------
+# Both primary and replicas accept either a literal value (not recommended,
+# the password ends up in your values file) or a reference to a Secret key
+# holding the complete "url|password" string (recommended).
+primary:
+  # e.g. "https://pihole.example.com|adminpass"
+  value: ""
+  secretKeyRef:
+    # name: pihole-creds
+    # key: primary
+    name: ""
+    key: "primary"
+
+replicas:
+  # list of "url|password" strings; rendered comma-joined, which is what
+  # nebula-sync expects in REPLICAS
+  values: []
+  # or a single secret key holding the comma-joined list, e.g.
+  # "https://a.example.com|pass1,https://b.example.com|pass2"
+  secretKeyRef:
+    # name: pihole-creds
+    # key: replicas
+    name: ""
+    key: "replicas"
+
+# --- sync settings ---------------------------------------------------------
+sync:
+  # true: full Teleporter export/import from primary to each replica.
+  # false: selective synchronization (see the `selective` section below).
+  fullSync: true
+  # Cron schedule for running syncs, e.g. "0 * * * *" (hourly).
+  # When set, nebula-sync also serves /health on port 8080.
+  # When left empty, nebula-sync runs once and exits - for that mode a
+  # CronJob is a better fit than this chart's Deployment.
+  cron: ""
+  # Re-run gravity (blocklist sync) on the replicas after a successful sync.
+  runGravity: false
+  # Timezone used for the cron schedule and the logs, e.g. "Europe/Berlin".
+  timezone: ""
+
+# The built-in HTTP endpoint serving /health on port 8080. It is only
+# started when sync.cron is set. Leave at the upstream default (true).
+api:
+  enabled: true
+
+# Probes against the /health endpoint on port 8080.
+# Note: /health only exists when sync.cron is set, and it returns 500 after a
+# failed sync - a liveness probe would therefore restart the pod whenever an
+# upstream Pi-hole is unreachable. Both default to off.
+probes:
+  liveness:
+    enabled: false
+    initialDelaySeconds: 30
+    periodSeconds: 30
+  readiness:
+    enabled: false
+    initialDelaySeconds: 15
+    periodSeconds: 15
+
+# --- HTTP client settings (defaults match upstream) -------------------------
+client:
+  # Skip TLS certificate verification for the Pi-hole API calls.
+  skipTLSVerification: false
+  # Seconds to delay between connection attempts.
+  retryDelaySeconds: 1
+  # HTTP client timeout in seconds.
+  timeoutSeconds: 20
+
+# --- selective synchronization ---------------------------------------------
+# Only used when sync.fullSync is false. Flags left at false are not set as
+# env vars at all. INCLUDE/EXCLUDE lists are mutually exclusive per section
+# and must contain case-sensitive keys relative to the section (e.g. "upstreams"
+# for dns.upstreams).
+selective:
+  # Config sections
+  configDns: false
+  configDnsInclude: []
+  configDnsExclude: []
+  configDhcp: false
+  configDhcpInclude: []
+  configDhcpExclude: []
+  configNtp: false
+  configNtpInclude: []
+  configNtpExclude: []
+  configResolver: false
+  configResolverInclude: []
+  configResolverExclude: []
+  configDatabase: false
+  configDatabaseInclude: []
+  configDatabaseExclude: []
+  configMisc: false
+  configMiscInclude: []
+  configMiscExclude: []
+  configDebug: false
+  configDebugInclude: []
+  configDebugExclude: []
+  # Gravity (lists and leases)
+  gravityDhcpLeases: false
+  gravityGroup: false
+  gravityAdList: false
+  gravityAdListByGroup: false
+  gravityDomainList: false
+  gravityDomainListByGroup: false
+  gravityClient: false
+  gravityClientByGroup: false
+
+# --- webhooks (optional) ----------------------------------------------------
+# Not documented in the upstream README; see internal/webhook in the
+# nebula-sync source. Headers are rendered as
+# WEBHOOK_SYNC_<SECTION>_HEADERS_<KEY> env vars (envconfig map parsing).
+webhook:
+  client:
+    skipTLSVerification: false
+  success:
+    url: ""
+    # default: POST
+    method: ""
+    body: ""
+    headers: {}
+  failure:
+    url: ""
+    method: ""
+    body: ""
+    headers: {}
+
+# --- standard k8s settings ---------------------------------------------------
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a
+  # conscious choice for the user. This also increases chances charts run on
+  # environments with little resources, such as Minikube. If you do want to
+  # specify resources, uncomment the following lines, adjust them as necessary,
+  # and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

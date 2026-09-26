@@ -1,0 +1,251 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "nebula-sync.fullname" . }}
+  labels:
+    {{- include "nebula-sync.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "nebula-sync.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "nebula-sync.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "nebula-sync.serviceAccountName" . }}
+      {{- with .Values.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          {{- with .Values.securityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: PRIMARY
+              {{- if .Values.primary.secretKeyRef.name }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.primary.secretKeyRef.name }}
+                  key: {{ .Values.primary.secretKeyRef.key | default "primary" }}
+              {{- else if .Values.primary.value }}
+              value: {{ .Values.primary.value | quote }}
+              {{- else }}
+              {{- fail "nebula-sync: set primary.secretKeyRef.name (recommended) or primary.value ('url|password')" }}
+              {{- end }}
+            - name: REPLICAS
+              {{- if .Values.replicas.secretKeyRef.name }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.replicas.secretKeyRef.name }}
+                  key: {{ .Values.replicas.secretKeyRef.key | default "replicas" }}
+              {{- else if .Values.replicas.values }}
+              value: {{ join "," .Values.replicas.values | quote }}
+              {{- else }}
+              {{- fail "nebula-sync: set replicas.secretKeyRef.name (recommended) or replicas.values (list of 'url|password')" }}
+              {{- end }}
+            - name: FULL_SYNC
+              value: {{ .Values.sync.fullSync | quote }}
+            - name: API_ENABLED
+              value: {{ .Values.api.enabled | quote }}
+            {{- if .Values.sync.cron }}
+            - name: CRON
+              value: {{ .Values.sync.cron | quote }}
+            {{- end }}
+            {{- if .Values.sync.runGravity }}
+            - name: RUN_GRAVITY
+              value: "true"
+            {{- end }}
+            {{- if .Values.sync.timezone }}
+            - name: TZ
+              value: {{ .Values.sync.timezone | quote }}
+            {{- end }}
+            {{- if .Values.client.skipTLSVerification }}
+            - name: CLIENT_SKIP_TLS_VERIFICATION
+              value: "true"
+            {{- end }}
+            {{- if ne (.Values.client.retryDelaySeconds | toString) "1" }}
+            - name: CLIENT_RETRY_DELAY_SECONDS
+              value: {{ .Values.client.retryDelaySeconds | quote }}
+            {{- end }}
+            {{- if ne (.Values.client.timeoutSeconds | toString) "20" }}
+            - name: CLIENT_TIMEOUT_SECONDS
+              value: {{ .Values.client.timeoutSeconds | quote }}
+            {{- end }}
+            {{- $sel := .Values.selective }}
+            {{- if $sel.configDns }}
+            - name: SYNC_CONFIG_DNS
+              value: "true"
+            {{- end }}
+            {{- if $sel.configDnsInclude }}
+            - name: SYNC_CONFIG_DNS_INCLUDE
+              value: {{ join "," $sel.configDnsInclude | quote }}
+            {{- end }}
+            {{- if $sel.configDnsExclude }}
+            - name: SYNC_CONFIG_DNS_EXCLUDE
+              value: {{ join "," $sel.configDnsExclude | quote }}
+            {{- end }}
+            {{- if $sel.configDhcp }}
+            - name: SYNC_CONFIG_DHCP
+              value: "true"
+            {{- end }}
+            {{- if $sel.configDhcpInclude }}
+            - name: SYNC_CONFIG_DHCP_INCLUDE
+              value: {{ join "," $sel.configDhcpInclude | quote }}
+            {{- end }}
+            {{- if $sel.configDhcpExclude }}
+            - name: SYNC_CONFIG_DHCP_EXCLUDE
+              value: {{ join "," $sel.configDhcpExclude | quote }}
+            {{- end }}
+            {{- if $sel.configNtp }}
+            - name: SYNC_CONFIG_NTP
+              value: "true"
+            {{- end }}
+            {{- if $sel.configNtpInclude }}
+            - name: SYNC_CONFIG_NTP_INCLUDE
+              value: {{ join "," $sel.configNtpInclude | quote }}
+            {{- end }}
+            {{- if $sel.configNtpExclude }}
+            - name: SYNC_CONFIG_NTP_EXCLUDE
+              value: {{ join "," $sel.configNtpExclude | quote }}
+            {{- end }}
+            {{- if $sel.configResolver }}
+            - name: SYNC_CONFIG_RESOLVER
+              value: "true"
+            {{- end }}
+            {{- if $sel.configResolverInclude }}
+            - name: SYNC_CONFIG_RESOLVER_INCLUDE
+              value: {{ join "," $sel.configResolverInclude | quote }}
+            {{- end }}
+            {{- if $sel.configResolverExclude }}
+            - name: SYNC_CONFIG_RESOLVER_EXCLUDE
+              value: {{ join "," $sel.configResolverExclude | quote }}
+            {{- end }}
+            {{- if $sel.configDatabase }}
+            - name: SYNC_CONFIG_DATABASE
+              value: "true"
+            {{- end }}
+            {{- if $sel.configDatabaseInclude }}
+            - name: SYNC_CONFIG_DATABASE_INCLUDE
+              value: {{ join "," $sel.configDatabaseInclude | quote }}
+            {{- end }}
+            {{- if $sel.configDatabaseExclude }}
+            - name: SYNC_CONFIG_DATABASE_EXCLUDE
+              value: {{ join "," $sel.configDatabaseExclude | quote }}
+            {{- end }}
+            {{- if $sel.configMisc }}
+            - name: SYNC_CONFIG_MISC
+              value: "true"
+            {{- end }}
+            {{- if $sel.configMiscInclude }}
+            - name: SYNC_CONFIG_MISC_INCLUDE
+              value: {{ join "," $sel.configMiscInclude | quote }}
+            {{- end }}
+            {{- if $sel.configMiscExclude }}
+            - name: SYNC_CONFIG_MISC_EXCLUDE
+              value: {{ join "," $sel.configMiscExclude | quote }}
+            {{- end }}
+            {{- if $sel.configDebug }}
+            - name: SYNC_CONFIG_DEBUG
+              value: "true"
+            {{- end }}
+            {{- if $sel.configDebugInclude }}
+            - name: SYNC_CONFIG_DEBUG_INCLUDE
+              value: {{ join "," $sel.configDebugInclude | quote }}
+            {{- end }}
+            {{- if $sel.configDebugExclude }}
+            - name: SYNC_CONFIG_DEBUG_EXCLUDE
+              value: {{ join "," $sel.configDebugExclude | quote }}
+            {{- end }}
+            {{- if $sel.gravityDhcpLeases }}
+            - name: SYNC_GRAVITY_DHCP_LEASES
+              value: "true"
+            {{- end }}
+            {{- if $sel.gravityGroup }}
+            - name: SYNC_GRAVITY_GROUP
+              value: "true"
+            {{- end }}
+            {{- if $sel.gravityAdList }}
+            - name: SYNC_GRAVITY_AD_LIST
+              value: "true"
+            {{- end }}
+            {{- if $sel.gravityAdListByGroup }}
+            - name: SYNC_GRAVITY_AD_LIST_BY_GROUP
+              value: "true"
+            {{- end }}
+            {{- if $sel.gravityDomainList }}
+            - name: SYNC_GRAVITY_DOMAIN_LIST
+              value: "true"
+            {{- end }}
+            {{- if $sel.gravityDomainListByGroup }}
+            - name: SYNC_GRAVITY_DOMAIN_LIST_BY_GROUP
+              value: "true"
+            {{- end }}
+            {{- if $sel.gravityClient }}
+            - name: SYNC_GRAVITY_CLIENT
+              value: "true"
+            {{- end }}
+            {{- if $sel.gravityClientByGroup }}
+            - name: SYNC_GRAVITY_CLIENT_BY_GROUP
+              value: "true"
+            {{- end }}
+            {{- $wh := .Values.webhook }}
+            {{- if $wh.client.skipTLSVerification }}
+            - name: WEBHOOK_CLIENT_SKIP_TLS_VERIFICATION
+              value: "true"
+            {{- end }}
+            {{- if or $wh.success.url $wh.success.method $wh.success.body $wh.success.headers }}
+            {{- include "nebula-sync.webhookEnv" (dict "Prefix" "WEBHOOK_SYNC_SUCCESS" "Cfg" $wh.success) | nindent 12 }}
+            {{- end }}
+            {{- if or $wh.failure.url $wh.failure.method $wh.failure.body $wh.failure.headers }}
+            {{- include "nebula-sync.webhookEnv" (dict "Prefix" "WEBHOOK_SYNC_FAILURE" "Cfg" $wh.failure) | nindent 12 }}
+            {{- end }}
+          {{- if .Values.probes.liveness.enabled }}
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: {{ .Values.probes.liveness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.probes.liveness.periodSeconds }}
+          {{- end }}
+          {{- if .Values.probes.readiness.enabled }}
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: {{ .Values.probes.readiness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.probes.readiness.periodSeconds }}
+          {{- end }}
+          {{- with .Values.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
